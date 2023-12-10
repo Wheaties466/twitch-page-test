@@ -125,3 +125,4 @@ document.getElementById('stream-name').addEventListener('keypress', function(e) 
         this.style.display = 'none';
     }
 });
+
