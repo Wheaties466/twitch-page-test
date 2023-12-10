@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Stream Viewer</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 </head>
 <body>
+    <button id="show-live">Show Live Streams</button>
+    <button id="show-offline">Show Offline Streams</button>
+    <button id="show-hidden">Show Hidden Streams</button>
+    <button id="add-stream">Add Stream</button>
+    <input type="text" id="stream-name" placeholder="Enter Streamer Name" style="display:none;"/>
     <div id="live-streams" class="stream-container">
         <!-- Live streams will be dynamically injected here -->
     </div>
@@ -14,7 +21,6 @@
         <!-- Offline streams will be dynamically injected here -->
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
     <script src="scripts.js"></script>
 </body>
