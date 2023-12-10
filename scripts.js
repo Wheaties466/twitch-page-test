@@ -85,6 +85,8 @@ function renderStreams(streamers) {
     });
 
     checkHiddenStreams();
+    makeStreamsDraggable();
+    loadStreamOrder();
 }
 
 // Check cookies on page load and hide streams if necessary
@@ -112,12 +114,10 @@ fetch('streamers.txt')
 document.getElementById('show-live').addEventListener('click', showAllStreamsInGrid);
 document.getElementById('show-offline').addEventListener('click', showAllStreamsInGrid);
 document.getElementById('show-hidden').addEventListener('click', unhideAllStreams);
-
 document.getElementById('add-stream').addEventListener('click', function() {
     document.getElementById('stream-name').style.display = 'block';
     document.getElementById('stream-name').focus();
 });
-
 document.getElementById('stream-name').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         addStream(this.value);
@@ -125,3 +125,66 @@ document.getElementById('stream-name').addEventListener('keypress', function(e) 
         this.style.display = 'none';
     }
 });
+
+// Make streams draggable
+function makeStreamsDraggable() {
+    $('.stream').draggable({
+        revert: 'invalid',
+        start: function() {
+            $(this).addClass('dragging');
+        },
+        stop: function() {
+            $(this).removeClass('dragging');
+        },
+        grid: [10, 10]
+    });
+
+    $('.stream-container').droppable({
+        accept: '.stream',
+        tolerance: 'intersect',
+        drop: function(event, ui) {
+            var draggedElement = ui.draggable;
+            var targetIndex = $(this).children().index(ui.helper);
+            var draggedIndex = draggedElement.index();
+
+            if (draggedIndex < targetIndex) {
+                $(this).children().eq(targetIndex).after(draggedElement);
+            } else {
+                $(this).children().eq(targetIndex).before(draggedElement);
+            }
+
+            saveStreamOrder();
+        }
+    });
+}
+
+// Save stream order to a cookie
+function saveStreamOrder() {
+    var order = $('.stream').map(function() {
+        return this.id;
+    }).get();
+    var orderString = order.join(',');
+    document.cookie = `stream_order=${orderString}; max-age=604800; path=/`;
+}
+
+// Load stream order from a cookie
+function loadStreamOrder() {
+    var orderString = getCookie('stream_order');
+    if (orderString) {
+        var order = orderString.split(',');
+        order.forEach(function(streamId) {
+            var streamElement = $('#' + streamId);
+            $('#live-streams').append(streamElement);
+        });
+    }
+}
+
+// Helper function to get a cookie value
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+// Event listener for reset layout button
+document.getElementById('reset-layout').addEventListener('click', resetStreamOrder);
