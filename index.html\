@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Stream Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="live-streams" class="stream-container">
+        <!-- Live streams will be dynamically injected here -->
+    </div>
+    <div id="offline-streams" class="stream-container" style="display: none;">
+        <!-- Offline streams will be dynamically injected here -->
+    </div>
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
