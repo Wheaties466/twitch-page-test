@@ -6,6 +6,7 @@
 }
 
 .stream {
+    cursor: move;
     border: 1px solid #ccc;
     position: relative;
     overflow: hidden;
