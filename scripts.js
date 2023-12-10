@@ -135,27 +135,28 @@ function makeStreamsDraggable() {
         },
         stop: function() {
             $(this).removeClass('dragging');
-        },
-        grid: [10, 10]
+        }
     });
 
     $('.stream-container').droppable({
         accept: '.stream',
-        tolerance: 'intersect',
         drop: function(event, ui) {
             var draggedElement = ui.draggable;
-            var targetIndex = $(this).children().index(ui.helper);
-            var draggedIndex = draggedElement.index();
-
-            if (draggedIndex < targetIndex) {
-                $(this).children().eq(targetIndex).after(draggedElement);
-            } else {
-                $(this).children().eq(targetIndex).before(draggedElement);
-            }
-
+            var dropTargetIndex = $(event.target).children().index(ui.helper);
+            handleStreamDrop(draggedElement, dropTargetIndex);
             saveStreamOrder();
         }
     });
+}
+
+// Handle stream drop
+function handleStreamDrop(draggedElement, dropTargetIndex) {
+    var allStreams = $('#live-streams').children('.stream');
+    if (dropTargetIndex >= allStreams.length) {
+        $('#live-streams').append(draggedElement);
+    } else {
+        $(allStreams[dropTargetIndex]).before(draggedElement.detach());
+    }
 }
 
 // Save stream order to localStorage
