@@ -9,7 +9,7 @@ function hideStream(streamDivId) {
 
 // Set or reset cookie for hidden streams
 function setHiddenStreamCookie(streamDivId, isHidden) {
-    document.cookie = `hidden_${streamDivId}=${isHidden}; max-age=604800; path=/`;
+    document.cookie = `hidden_${streamDivId}=${isHidden}; max-age=604800; path=/`; // Expires in 7 days
 }
 
 // Function to show all streams in a grid layout
@@ -85,8 +85,6 @@ function renderStreams(streamers) {
     });
 
     checkHiddenStreams();
-    makeStreamsDraggable();
-    loadStreamOrder();
 }
 
 // Check cookies on page load and hide streams if necessary
@@ -127,54 +125,3 @@ document.getElementById('stream-name').addEventListener('keypress', function(e) 
         this.style.display = 'none';
     }
 });
-
-// Make streams draggable
-function makeStreamsDraggable() {
-    $('.stream').draggable({
-        revert: 'invalid',
-        start: function() {
-            $(this).addClass('dragging');
-        },
-        stop: function() {
-            $(this).removeClass('dragging');
-        }
-    });
-
-    $('.stream').droppable({
-        accept: '.stream',
-        drop: function(event, ui) {
-            var draggedId = ui.draggable.attr('id');
-            var droppedOnId = $(this).attr('id');
-            reorderStreams(draggedId, droppedOnId);
-            saveStreamOrder();
-        }
-    });
-}
-
-// Reorder streams
-function reorderStreams(draggedId, droppedOnId) {
-    var draggedElement = $('#' + draggedId);
-    var droppedOnElement = $('#' + droppedOnId);
-    $(droppedOnElement).before(draggedElement.detach());
-}
-
-// Save stream order to localStorage
-function saveStreamOrder() {
-    var order = $('.stream').map(function() {
-        return this.id;
-    }).get();
-    localStorage.setItem('stream_order', JSON.stringify(order));
-}
-
-// Load stream order from localStorage
-function loadStreamOrder() {
-    var order = JSON.parse(localStorage.getItem('stream_order'));
-    if (order) {
-        order.forEach(function(streamId) {
-            var streamElement = $('#' + streamId);
-            $('#live-streams').append(streamElement);
-        });
-    }
-}
-
-// Call makeStreamsDraggable and loadStreamOrder in renderStreams after streams are added
