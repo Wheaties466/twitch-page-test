@@ -143,27 +143,25 @@ function makeStreamsDraggable() {
     $('.stream').droppable({
         accept: '.stream',
         drop: function(event, ui) {
-<<<<<<< HEAD
             var draggedId = ui.draggable.attr('id');
             var droppedOnId = $(this).attr('id');
             reorderStreams(draggedId, droppedOnId);
-=======
+
             var draggedElement = ui.draggable;
             var dropTargetIndex = $(event.target).children().index(ui.helper);
             handleStreamDrop(draggedElement, dropTargetIndex);
->>>>>>> parent of 0517a73 (Update scripts.js)
             saveStreamOrder();
         }
     });
 }
 
-<<<<<<< HEAD
+
 // Reorder streams
 function reorderStreams(draggedId, droppedOnId) {
     var draggedElement = $('#' + draggedId);
     var droppedOnElement = $('#' + droppedOnId);
     $(droppedOnElement).before(draggedElement.detach());
-=======
+
 // Handle stream drop
 function handleStreamDrop(draggedElement, dropTargetIndex) {
     var allStreams = $('#live-streams').children('.stream');
@@ -172,7 +170,6 @@ function handleStreamDrop(draggedElement, dropTargetIndex) {
     } else {
         $(allStreams[dropTargetIndex]).before(draggedElement.detach());
     }
->>>>>>> parent of 0517a73 (Update scripts.js)
 }
 
 // Save stream order to localStorage
