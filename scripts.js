@@ -9,7 +9,7 @@ function hideStream(streamDivId) {
 
 // Set or reset cookie for hidden streams
 function setHiddenStreamCookie(streamDivId, isHidden) {
-    document.cookie = `hidden_${streamDivId}=${isHidden}; max-age=604800; path=/`; // Expires in 7 days
+    document.cookie = `hidden_${streamDivId}=${isHidden}; max-age=604800; path=/`;
 }
 
 // Function to show all streams in a grid layout
@@ -114,10 +114,12 @@ fetch('streamers.txt')
 document.getElementById('show-live').addEventListener('click', showAllStreamsInGrid);
 document.getElementById('show-offline').addEventListener('click', showAllStreamsInGrid);
 document.getElementById('show-hidden').addEventListener('click', unhideAllStreams);
+
 document.getElementById('add-stream').addEventListener('click', function() {
     document.getElementById('stream-name').style.display = 'block';
     document.getElementById('stream-name').focus();
 });
+
 document.getElementById('stream-name').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         addStream(this.value);
@@ -135,21 +137,15 @@ function makeStreamsDraggable() {
         },
         stop: function() {
             $(this).removeClass('dragging');
-        },
-        grid: [10, 10]
+        }
     });
 
-    $('.stream-container').droppable({
+    $('.stream').droppable({
         accept: '.stream',
-        tolerance: 'intersect',
         drop: function(event, ui) {
             var draggedId = ui.draggable.attr('id');
             var droppedOnId = $(this).attr('id');
             reorderStreams(draggedId, droppedOnId);
-
-            var draggedElement = ui.draggable;
-            var dropTargetIndex = $(event.target).children().index(ui.helper);
-            handleStreamDrop(draggedElement, dropTargetIndex);
             saveStreamOrder();
         }
     });
@@ -160,15 +156,6 @@ function reorderStreams(draggedId, droppedOnId) {
     var draggedElement = $('#' + draggedId);
     var droppedOnElement = $('#' + droppedOnId);
     $(droppedOnElement).before(draggedElement.detach());
-
-// Handle stream drop
-function handleStreamDrop(draggedElement, dropTargetIndex) {
-    var allStreams = $('#live-streams').children('.stream');
-    if (dropTargetIndex >= allStreams.length) {
-        $('#live-streams').append(draggedElement);
-    } else {
-        $(allStreams[dropTargetIndex]).before(draggedElement.detach());
-    }
 }
 
 // Save stream order to localStorage
@@ -190,16 +177,4 @@ function loadStreamOrder() {
     }
 }
 
-// Reset stream order
-function resetStreamOrder() {
-    fetch('streamers.txt')
-        .then(response => response.text())
-        .then(text => {
-            const streamers = text.split('\n').filter(Boolean);
-            renderStreams(streamers);
-        })
-        .catch(error => console.error('Error fetching streamers list:', error));
-}
-
-// Event listener for reset layout button
-document.getElementById('reset-layout').addEventListener('click', resetStreamOrder);
+// Call makeStreamsDraggable and loadStreamOrder in renderStreams after streams are added
