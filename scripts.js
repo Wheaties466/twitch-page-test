@@ -155,7 +155,6 @@ function makeStreamsDraggable() {
     });
 }
 
-
 // Reorder streams
 function reorderStreams(draggedId, droppedOnId) {
     var draggedElement = $('#' + draggedId);
