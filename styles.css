@@ -1,0 +1,37 @@
+.stream-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.stream {
+    border: 1px solid #ccc;
+    position: relative;
+    overflow: hidden;
+    resize: both;
+}
+
+.hide-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+h3 {
+    margin: 0;
+    padding: 10px;
+    background-color: #eee;
+}
