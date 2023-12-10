@@ -68,8 +68,10 @@ function createTwitchEmbed(streamer, container) {
 }
 
 // Function to add a new stream
-function addStream(streamName) {
-    createTwitchEmbed(streamName, document.getElementById('live-streams'));
+function addStream(streamNames) {
+    streamNames.forEach(streamName => {
+        createTwitchEmbed(streamName.trim(), document.getElementById('live-streams'));
+    });
 }
 
 // Function to render streams
@@ -120,7 +122,8 @@ document.getElementById('add-stream').addEventListener('click', function() {
 });
 document.getElementById('stream-name').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
-        addStream(this.value);
+        var streamNames = this.value.split('\n');
+        addStream(streamNames);
         this.value = '';
         this.style.display = 'none';
     }
