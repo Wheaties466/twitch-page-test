@@ -3,13 +3,13 @@ function hideStream(streamDivId) {
     const streamDiv = document.getElementById(streamDivId);
     if (streamDiv) {
         streamDiv.style.display = 'none';
-        setHiddenStreamCookie(streamDivId);
+        setHiddenStreamCookie(streamDivId, true);
     }
 }
 
-// Set cookie for hidden streams
-function setHiddenStreamCookie(streamDivId) {
-    document.cookie = `hidden_${streamDivId}=true; max-age=86400; path=/`;
+// Set or reset cookie for hidden streams
+function setHiddenStreamCookie(streamDivId, isHidden) {
+    document.cookie = `hidden_${streamDivId}=${isHidden}; max-age=604800; path=/`; // Expires in 7 days
 }
 
 // Function to show all streams in a grid layout
@@ -20,11 +20,23 @@ function showAllStreamsInGrid() {
     });
 }
 
+// Function to unhide all streams
+function unhideAllStreams() {
+    const hiddenStreams = document.querySelectorAll('.stream');
+    hiddenStreams.forEach(stream => {
+        stream.style.display = 'grid';
+        const streamId = stream.id;
+        if (streamId) {
+            setHiddenStreamCookie(streamId, false);
+        }
+    });
+}
+
 // Function to create a Twitch embed for a given streamer
 function createTwitchEmbed(streamer, container) {
     const embedDivId = 'twitch-embed-' + streamer;
     const streamDivId = 'stream-div-' + streamer;
-
+    
     const streamDiv = document.createElement('div');
     streamDiv.id = streamDivId;
     streamDiv.className = 'stream';
@@ -47,26 +59,17 @@ function createTwitchEmbed(streamer, container) {
 
     container.appendChild(streamDiv);
 
-    $(streamDiv).resizable({
-        minHeight: 300,
-        minWidth: 300,
-        resize: function(event, ui) {
-            $(this).find('.twitch-embed').each(function() {
-                $(this).width(ui.size.width);
-                $(this).height(ui.size.height - streamHeader.outerHeight(true) - hideButton.outerHeight(true));
-            });
-        }
-    }).draggable({
-        containment: 'body',
-        scroll: false
-    });
-
     new Twitch.Embed(embedDivId, {
-        width: '100%',
-        height: '100%',
+        width: 854,
+        height: 480,
         channel: streamer,
         parent: ["wheaties466.github.io"]
     });
+}
+
+// Function to add a new stream
+function addStream(streamName) {
+    createTwitchEmbed(streamName, document.getElementById('live-streams'));
 }
 
 // Function to render streams
@@ -106,8 +109,19 @@ fetch('streamers.txt')
     .catch(error => console.error('Error fetching streamers list:', error));
 
 // Event listeners for the toggle buttons
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('show-live').addEventListener('click', function() {
-        showAllStreamsInGrid();
-        document.getElementById('live-streams').style.display = 'grid';
-        document.getElementById('offline-streams').
+document.getElementById('show-live').addEventListener('click', showAllStreamsInGrid);
+document.getElementById('show-offline').addEventListener('click', showAllStreamsInGrid);
+document.getElementById('show-hidden').addEventListener('click', unhideAllStreams);
+
+document.getElementById('add-stream').addEventListener('click', function() {
+    document.getElementById('stream-name').style.display = 'block';
+    document.getElementById('stream-name').focus();
+});
+
+document.getElementById('stream-name').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addStream(this.value);
+        this.value = '';
+        this.style.display = 'none';
+    }
+});
