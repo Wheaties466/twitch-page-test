@@ -47,7 +47,6 @@ function createTwitchEmbed(streamer, container) {
 
     container.appendChild(streamDiv);
 
-    // Make the streamDiv resizable and adjust the embed size on resize
     $(streamDiv).resizable({
         minHeight: 300,
         minWidth: 300,
@@ -107,14 +106,8 @@ fetch('streamers.txt')
     .catch(error => console.error('Error fetching streamers list:', error));
 
 // Event listeners for the toggle buttons
-document.getElementById('show-live').addEventListener('click', function() {
-    showAllStreamsInGrid();
-    document.getElementById('live-streams').style.display = 'grid';
-    document.getElementById('offline-streams').style.display = 'none';
-});
-
-document.getElementById('show-offline').addEventListener('click', function() {
-    showAllStreamsInGrid();
-    document.getElementById('live-streams').style.display = 'none';
-    document.getElementById('offline-streams').style.display = 'grid';
-});
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('show-live').addEventListener('click', function() {
+        showAllStreamsInGrid();
+        document.getElementById('live-streams').style.display = 'grid';
+        document.getElementById('offline-streams').
